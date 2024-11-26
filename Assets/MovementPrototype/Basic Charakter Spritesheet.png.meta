@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 38871a335e492094ebd9c1ef999eae38
+guid: 370046ca1df7ffa40a3d25bc6407f0ee
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Basic Charakter Spritesheet_0: 7595986285605212588
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
