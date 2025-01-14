@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 372786315467292587}
   - component: {fileID: 188602981605100654}
   - component: {fileID: 8959283673309121934}
-  - component: {fileID: 3188189502182173038}
+  - component: {fileID: 5331467659124333186}
   m_Layer: 0
   m_Name: Ghost
   m_TagString: Ghost
@@ -163,7 +163,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &3188189502182173038
+--- !u!114 &5331467659124333186
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,9 +172,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 6836814305907978969}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58ae43a6664e77744b637196fc1e8982, type: 3}
+  m_Script: {fileID: 11500000, guid: 8016b8e7d61a4e141893774acbf9ecd6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
-  minWaitTime: 1
-  maxWaitTime: 3
+  patrolSpeed: 2
+  chaseSpeed: 3
+  waitTimeAtNode: 1
+  minDistanceToNode: 0.1
+  detectionRadius: 5
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  showPathGizmos: 0

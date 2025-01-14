@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
+using Game.Global.System;
 
-public class NodePlacer : MonoBehaviour
+public class NodePlacer : Singleton<NodePlacer>
 {
     [System.Serializable]
     public class RoomData
@@ -14,14 +15,17 @@ public class NodePlacer : MonoBehaviour
     }
 
     [SerializeField] private GameObject nodePrefab;
-    [SerializeField] private float nodeConnectionRadius = 3f;
+    [SerializeField] private float nodeConnectionRadius = 2f;
     [SerializeField] private Transform masterNodesParent; // Single parent for all rooms
-    [SerializeField] private List<RoomData> rooms = new List<RoomData>();
+    [SerializeField] public List<RoomData> rooms = new List<RoomData>();
+
+    public static event System.Action OnNodesPlaced;
 
     private void Start()
     {
         InitializeRoomContainers();
         PlaceNodesInAllRooms();
+        OnNodesPlaced?.Invoke();
     }
 
     private void InitializeRoomContainers()
@@ -69,6 +73,8 @@ public class NodePlacer : MonoBehaviour
     private void PlaceNodesInRoom(RoomData room)
     {
         BoundsInt bounds = room.roomTilemap.cellBounds;
+        float subdivisions = 2f; // Each tile will be divided into 2x2 sections
+        float offset = 1f / subdivisions;
 
         for (int x = bounds.min.x; x < bounds.max.x; x++)
         {
@@ -78,21 +84,36 @@ public class NodePlacer : MonoBehaviour
                 
                 if (room.roomTilemap.HasTile(tilePosition))
                 {
-                    Vector3 worldPosition = room.roomTilemap.GetCellCenterWorld(tilePosition);
-                    
-                    GameObject nodeObj = Instantiate(nodePrefab, worldPosition, Quaternion.identity);
-                    nodeObj.transform.parent = room.nodesParent;
-                    nodeObj.name = $"Node_{x}_{y}";
-                    
-                    Node node = nodeObj.GetComponent<Node>();
-                    if (node != null)
+                    // Get the world position of the tile center
+                    Vector3 baseTilePosition = room.roomTilemap.GetCellCenterWorld(tilePosition);
+
+                    // Place nodes in a grid within each tile
+                    for (float subX = -0.5f + (offset/2); subX <= 0.5f - (offset/2); subX += offset)
                     {
-                        room.nodes.Add(node);
+                        for (float subY = -0.5f + (offset/2); subY <= 0.5f - (offset/2); subY += offset)
+                        {
+                            Vector3 nodePosition = new Vector3(
+                                baseTilePosition.x + subX,
+                                baseTilePosition.y + subY,
+                                baseTilePosition.z
+                            );
+
+                            GameObject nodeObj = Instantiate(nodePrefab, nodePosition, Quaternion.identity);
+                            nodeObj.transform.parent = room.nodesParent;
+                            nodeObj.name = $"Node_{x}_{y}_{subX}_{subY}";
+                            
+                            Node node = nodeObj.GetComponent<Node>();
+                            if (node != null)
+                            {
+                                room.nodes.Add(node);
+                            }
+                        }
                     }
                 }
             }
         }
     }
+
 
     private void ConnectNodes(List<Node> nodes)
     {
