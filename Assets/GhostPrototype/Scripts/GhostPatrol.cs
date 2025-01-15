@@ -25,6 +25,7 @@ public class Ghost : MonoBehaviour
     private Transform playerTransform;
     private bool isChasing;
     private float currentSpeed;
+    private Animator animator;
 
     private void Start()
     {
@@ -43,6 +44,7 @@ public class Ghost : MonoBehaviour
         {
             Debug.LogError("Ghost: No starting node found!");
         }
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -89,6 +91,24 @@ public class Ghost : MonoBehaviour
         {
             Vector2 direction = (currentTargetNode.transform.position - transform.position).normalized;
             transform.position += (Vector3)direction * currentSpeed * Time.deltaTime;
+
+            // Update animation based on movement direction
+            if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+            {
+                // Horizontal movement is stronger
+                if (direction.x > 0)
+                    animator.SetFloat("Animations", 2); // move right
+                else
+                    animator.SetFloat("Animations", 3); // move left
+            }
+            else
+            {
+                // Vertical movement is stronger
+                if (direction.y > 0)
+                    animator.SetFloat("Animations", 0); // move up
+                else
+                    animator.SetFloat("Animations", 1); // move down
+            }
 
             if (Vector2.Distance(transform.position, currentTargetNode.transform.position) < minDistanceToNode)
             {

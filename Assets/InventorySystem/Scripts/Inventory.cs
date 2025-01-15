@@ -15,8 +15,9 @@ namespace Game.InventorySystem{
             public bool wasJustPickedUp; // Add flag for each slot
         }
 
-        [SerializeField] private InventorySlot[] slots = new InventorySlot[4];
+        [SerializeField] private InventorySlot[] slots = new InventorySlot[2];
         private int selectedSlot = 0;
+        [SerializeField] private Sprite imgSlot;
 
         void Start()
         {
@@ -43,6 +44,7 @@ namespace Game.InventorySystem{
         {
             if (Input.GetAxis("Mouse ScrollWheel") > 0f)
             {
+                Debug.Log("Scrolling up");
                 SelectSlot((selectedSlot + 1) % slots.Length);
             }
             else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
@@ -169,6 +171,9 @@ namespace Game.InventorySystem{
             {
                 usableItem.Use();
             }
+            else if(slots[selectedSlot].currentItem is Flashlights flashlights){
+                flashlights.Use();
+            }
         }
 
         /// <summary>
@@ -183,9 +188,9 @@ namespace Game.InventorySystem{
             {
                 slots[selectedSlot].currentItem.ShowInWorld(GameObject.FindGameObjectWithTag("Player").transform.position);
                 slots[selectedSlot].currentItem = null;
+                slots[selectedSlot].slotImage.sprite = imgSlot;
                 UpdateSlotUI(selectedSlot);
             }
         }
     }
 }
-

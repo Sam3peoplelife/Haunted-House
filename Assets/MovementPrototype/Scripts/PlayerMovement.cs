@@ -19,12 +19,15 @@ namespace Game.Movement.Logic
         private Vector2 movement;
         private bool isSprinting;
         private float staminaRegenTimer;
+        private Animator animator;
+
 
         void Start()
         {
             rb = GetComponent<Rigidbody2D>();
             currentSpeed = normalSpeed;
             currentStamina = maxStamina;
+            animator = GetComponent<Animator>();
         }
 
         void Update()
@@ -32,13 +35,55 @@ namespace Game.Movement.Logic
             // Handle input
             movement.x = Input.GetAxisRaw("Horizontal");
             movement.y = Input.GetAxisRaw("Vertical");
+            movement = movement.normalized;
 
             // Handle sprinting
             HandleSprinting();
             
             // Handle stamina regeneration
             HandleStaminaRegen();
+            UpdateAnimationState();
         }
+
+        private void UpdateAnimationState()
+        {
+            if (movement.magnitude > 0)
+            {
+                // Determine direction based on movement
+                if (Mathf.Abs(movement.x) > Mathf.Abs(movement.y))
+                {
+                    // Horizontal movement is stronger
+                    if (movement.x > 0)
+                        animator.SetFloat("Animations", 6); // move_right
+                    else
+                        animator.SetFloat("Animations", 7); // move_left
+                }
+                else
+                {
+                    // Vertical movement is stronger
+                    if (movement.y > 0)
+                        animator.SetFloat("Animations", 4); // move_up
+                    else
+                        animator.SetFloat("Animations", 5); // move_down
+                }
+            }
+            else
+            {
+                // Get the current animation value to determine which idle to use
+                float currentAnim = animator.GetFloat("Animations");
+                
+                // Set corresponding idle animation based on last movement
+                if (currentAnim == 4) // was moving up
+                    animator.SetFloat("Animations", 0); // idle_up
+                else if (currentAnim == 5) // was moving down
+                    animator.SetFloat("Animations", 1); // idle_down
+                else if (currentAnim == 6) // was moving right
+                    animator.SetFloat("Animations", 2); // idle_right
+                else if (currentAnim == 7) // was moving left
+                    animator.SetFloat("Animations", 3); // idle_left
+            }
+        }
+
 
         void FixedUpdate()
         {

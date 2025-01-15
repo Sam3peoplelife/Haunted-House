@@ -19,7 +19,7 @@ namespace Game.InventorySystem{
             if (collision.CompareTag("Player"))
             {
                 canPickup = true;
-                currentPrompt = Instantiate(pickupPromptPrefab, transform.position, Quaternion.identity);
+                //currentPrompt = Instantiate(pickupPromptPrefab, transform.position, Quaternion.identity);
             }
         }
 

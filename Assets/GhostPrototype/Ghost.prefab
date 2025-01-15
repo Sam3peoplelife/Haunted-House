@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   patrolSpeed: 2
-  chaseSpeed: 3
+  chaseSpeed: 4
   waitTimeAtNode: 1
   minDistanceToNode: 0.1
   detectionRadius: 5
